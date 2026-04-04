@@ -1,0 +1,18 @@
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.env
+
+# Backend
+Backend/parking/target/
+Backend/parking/.mvn/
+Backend/parking/*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
