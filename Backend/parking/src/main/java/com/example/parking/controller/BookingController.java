@@ -50,10 +50,11 @@ public class BookingController {
     // 🚗 BOOK SLOT
     @PostMapping("/book")
     public ResponseEntity<?> bookSlot(@RequestParam String slotNumber,
+                                      @RequestParam(required = false) String vehicleNumber,
                                       HttpServletRequest request) {
         try {
             String email = getEmailFromRequest(request);
-            Booking booking = bookingService.bookSlot(email, slotNumber);
+            Booking booking = bookingService.bookSlot(email, slotNumber, vehicleNumber);
             return ResponseEntity.ok(booking);
         } catch (RuntimeException e) {
             return ResponseEntity.status(409).body(e.getMessage());

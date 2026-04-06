@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: "Sora", "Segoe UI", sans-serif;
@@ -16,6 +17,10 @@ body {
   background:
     radial-gradient(circle at top, rgba(245, 158, 11, 0.12), transparent 28%),
     linear-gradient(180deg, #fffdf9 0%, #f6efe5 100%);
+}
+
+html.dark body {
+  background: #0f0f0f;
 }
 
 * {

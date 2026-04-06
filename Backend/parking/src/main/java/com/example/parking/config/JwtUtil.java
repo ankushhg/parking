@@ -19,10 +19,11 @@ public class JwtUtil {
     }
 
     // GENERATE TOKEN
-    public String generateToken(String email, String role) {
+    public String generateToken(String email, String role, String name) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role)
+                .claim("name", name)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getKey(), SignatureAlgorithm.HS256)

@@ -17,6 +17,8 @@ public class Booking {
 
     private String slotNumber;
 
+    private String vehicleNumber;
+
     private boolean active = true;
 
     private LocalDateTime bookingTime = LocalDateTime.now();
@@ -33,6 +35,9 @@ public class Booking {
 
     public String getSlotNumber() { return slotNumber; }
     public void setSlotNumber(String slotNumber) { this.slotNumber = slotNumber; }
+
+    public String getVehicleNumber() { return vehicleNumber; }
+    public void setVehicleNumber(String vehicleNumber) { this.vehicleNumber = vehicleNumber; }
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }

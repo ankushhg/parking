@@ -1,0 +1,272 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------< com.example:parking >-------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.5:run (default-cli) > test-compile @ parking >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ parking ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ parking ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ parking ---
+[INFO] skip non existing resourceDirectory c:\mtd_project\project\Backend\parking\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ parking ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.0.5:run (default-cli) < test-compile @ parking <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.5:run (default-cli) @ parking ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-04-06T03:24:04.725-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : Starting ParkingApplication using Java 25.0.2 with PID 7256 (c:\mtd_project\project\Backend\parking\target\classes started by ml 3 in c:\mtd_project\project\Backend\parking)
+2026-04-06T03:24:04.727-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-04-06T03:24:04.754-07:00  INFO 7256 --- [parking] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-06T03:24:04.754-07:00  INFO 7256 --- [parking] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-06T03:24:05.088-07:00  INFO 7256 --- [parking] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-06T03:24:05.128-07:00  INFO 7256 --- [parking] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 35 ms. Found 6 JPA repository interfaces.
+2026-04-06T03:24:05.422-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 3955 (http)
+2026-04-06T03:24:05.429-07:00  INFO 7256 --- [parking] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-06T03:24:05.430-07:00  INFO 7256 --- [parking] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-06T03:24:05.450-07:00  INFO 7256 --- [parking] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 695 ms
+2026-04-06T03:24:05.520-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-06T03:24:05.544-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-06T03:24:05.777-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-06T03:24:05.794-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-06T03:24:05.988-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6f817e8c
+2026-04-06T03:24:05.989-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-06T03:24:06.030-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/Parking?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: Parking/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-06T03:24:06.557-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-06T03:24:06.586-07:00  INFO 7256 --- [parking] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-06T03:24:06.619-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-06T03:24:06.727-07:00  WARN 7256 --- [parking] [  restartedMain] o.s.aop.framework.CglibAopProxy          : Unable to proxy interface-implementing method [public final void org.springframework.web.filter.GenericFilterBean.init(jakarta.servlet.FilterConfig) throws jakarta.servlet.ServletException] because it is marked as final, consider using interface-based JDK proxies instead.
+2026-04-06T03:24:06.837-07:00  WARN 7256 --- [parking] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-06T03:24:06.857-07:00  INFO 7256 --- [parking] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-06T03:24:07.120-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-04-06T03:24:07.120-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5b6109be]]
+2026-04-06T03:24:07.120-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-04-06T03:24:07.128-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 3955 (http) with context path '/'
+2026-04-06T03:24:07.132-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : Started ParkingApplication in 2.603 seconds (process running for 2.842)
+Hibernate: 
+    select
+        count(*) 
+    from
+        parking_slot ps1_0
+Hibernate: 
+    select
+        b1_0.id,
+        b1_0.active,
+        b1_0.booking_time,
+        b1_0.cost,
+        b1_0.exit_time,
+        b1_0.slot_number,
+        b1_0.user_email,
+        b1_0.vehicle_number 
+    from
+        booking b1_0 
+    where
+        b1_0.active=true 
+        and b1_0.booking_time<?
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.reset_token,
+        u1_0.reset_token_expiry,
+        u1_0.role 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        pc1_0.config_key,
+        pc1_0.value 
+    from
+        parking_config pc1_0 
+    where
+        pc1_0.config_key=?
+2026-04-06T03:25:07.119-07:00  INFO 7256 --- [parking] [MessageBroker-2] o.s.w.s.c.WebSocketMessageBrokerStats    : WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 3, active threads = 1, queued tasks = 1, completed tasks = 1]
+Hibernate: 
+    select
+        b1_0.id,
+        b1_0.active,
+        b1_0.booking_time,
+        b1_0.cost,
+        b1_0.exit_time,
+        b1_0.slot_number,
+        b1_0.user_email,
+        b1_0.vehicle_number 
+    from
+        booking b1_0 
+    where
+        b1_0.active=true 
+        and b1_0.booking_time<?
+Hibernate: 
+    select
+        b1_0.id,
+        b1_0.active,
+        b1_0.booking_time,
+        b1_0.cost,
+        b1_0.exit_time,
+        b1_0.slot_number,
+        b1_0.user_email,
+        b1_0.vehicle_number 
+    from
+        booking b1_0 
+    where
+        b1_0.active=true 
+        and b1_0.booking_time<?
+Hibernate: 
+    select
+        b1_0.id,
+        b1_0.active,
+        b1_0.booking_time,
+        b1_0.cost,
+        b1_0.exit_time,
+        b1_0.slot_number,
+        b1_0.user_email,
+        b1_0.vehicle_number 
+    from
+        booking b1_0 
+    where
+        b1_0.active=true 
+        and b1_0.booking_time<?
+2026-04-06T03:27:34.395-07:00  INFO 7256 --- [parking] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 31 class path changes (0 additions, 0 deletions, 31 modifications)
+2026-04-06T03:27:34.398-07:00  INFO 7256 --- [parking] [       Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-04-06T03:27:34.400-07:00  INFO 7256 --- [parking] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-04-06T03:27:34.401-07:00  INFO 7256 --- [parking] [       Thread-1] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopping...
+2026-04-06T03:27:34.401-07:00  INFO 7256 --- [parking] [       Thread-1] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@5b6109be]]
+2026-04-06T03:27:34.401-07:00  INFO 7256 --- [parking] [       Thread-1] o.s.m.s.b.SimpleBrokerMessageHandler     : Stopped.
+2026-04-06T03:27:34.403-07:00  INFO 7256 --- [parking] [       Thread-1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-06T03:27:34.405-07:00  INFO 7256 --- [parking] [       Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-06T03:27:34.408-07:00  INFO 7256 --- [parking] [       Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-04-06T03:27:34.462-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : Starting ParkingApplication using Java 25.0.2 with PID 7256 (c:\mtd_project\project\Backend\parking\target\classes started by ml 3 in c:\mtd_project\project\Backend\parking)
+2026-04-06T03:27:34.462-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-04-06T03:27:34.574-07:00  INFO 7256 --- [parking] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-06T03:27:34.582-07:00  INFO 7256 --- [parking] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 6 JPA repository interfaces.
+2026-04-06T03:27:34.631-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 3955 (http)
+2026-04-06T03:27:34.632-07:00  INFO 7256 --- [parking] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-06T03:27:34.632-07:00  INFO 7256 --- [parking] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-06T03:27:34.640-07:00  INFO 7256 --- [parking] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 176 ms
+2026-04-06T03:27:34.655-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-06T03:27:34.674-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-06T03:27:34.675-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-04-06T03:27:34.694-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@146db17a
+2026-04-06T03:27:34.694-07:00  INFO 7256 --- [parking] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-04-06T03:27:34.696-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/Parking?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: Parking/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-06T03:27:34.746-07:00  INFO 7256 --- [parking] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-06T03:27:34.753-07:00  INFO 7256 --- [parking] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-06T03:27:34.785-07:00  WARN 7256 --- [parking] [  restartedMain] o.s.aop.framework.CglibAopProxy          : Unable to proxy interface-implementing method [public final void org.springframework.web.filter.GenericFilterBean.init(jakarta.servlet.FilterConfig) throws jakarta.servlet.ServletException] because it is marked as final, consider using interface-based JDK proxies instead.
+2026-04-06T03:27:34.849-07:00  WARN 7256 --- [parking] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-06T03:27:34.855-07:00  INFO 7256 --- [parking] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-06T03:27:34.940-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Starting...
+2026-04-06T03:27:34.941-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7c2566c2]]
+2026-04-06T03:27:34.941-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.m.s.b.SimpleBrokerMessageHandler     : Started.
+2026-04-06T03:27:34.942-07:00  INFO 7256 --- [parking] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 3955 (http) with context path '/'
+2026-04-06T03:27:34.944-07:00  INFO 7256 --- [parking] [  restartedMain] com.example.parking.ParkingApplication   : Started ParkingApplication in 0.494 seconds (process running for 210.654)
+Hibernate: 
+    select
+        b1_0.id,
+        b1_0.active,
+        b1_0.booking_time,
+        b1_0.cost,
+        b1_0.exit_time,
+        b1_0.slot_number,
+        b1_0.user_email,
+        b1_0.vehicle_number 
+    from
+        booking b1_0 
+    where
+        b1_0.active=true 
+        and b1_0.booking_time<?
+Hibernate: 
+    select
+        count(*) 
+    from
+        parking_slot ps1_0
+Hibernate: 
+    select
+        u1_0.id,
+        u1_0.email,
+        u1_0.name,
+        u1_0.password,
+        u1_0.reset_token,
+        u1_0.reset_token_expiry,
+        u1_0.role 
+    from
+        users u1_0 
+    where
+        u1_0.email=?
+Hibernate: 
+    select
+        pc1_0.config_key,
+        pc1_0.value 
+    from
+        parking_config pc1_0 
+    where
+        pc1_0.config_key=?
+2026-04-06T03:27:34.979-07:00  INFO 7256 --- [parking] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  04:17 min
+[INFO] Finished at: 2026-04-06T03:28:21-07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.0.5:run (default-cli) on project parking: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

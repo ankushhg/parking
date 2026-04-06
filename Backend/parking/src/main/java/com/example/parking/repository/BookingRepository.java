@@ -1,5 +1,6 @@
 package com.example.parking.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserEmail(String email);
 
     List<Booking> findByUserEmailAndActiveTrue(String email);
+
+    List<Booking> findByActiveTrueAndBookingTimeBefore(LocalDateTime cutoff);
 }

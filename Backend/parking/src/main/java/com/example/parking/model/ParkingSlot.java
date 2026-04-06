@@ -23,4 +23,6 @@ public class ParkingSlot {
     private String slotNumber;
 
     private boolean available = true;
+
+    private int floor = 1;
 }

@@ -19,6 +19,7 @@ import com.example.parking.repository.BookingRepository;
 import com.example.parking.repository.ParkingSlotRepository;
 import com.example.parking.repository.UserRepository;
 import com.example.parking.repository.WaitingQueueRepository;
+import com.example.parking.repository.ParkingConfigRepository;
 
 @Service
 public class BookingService {
@@ -30,6 +31,7 @@ public class BookingService {
     @Autowired private UserRepository userRepository;
     @Autowired private WaitingQueueRepository waitingQueueRepository;
     @Autowired private SimpMessagingTemplate messagingTemplate;
+    @Autowired private ParkingConfigRepository configRepository;
 
     // ─────────────────────────────────────────────
     // 🧠 SMART SLOT NAME GENERATOR
@@ -82,7 +84,7 @@ public class BookingService {
     // 🚗 BOOK SLOT — auto assign or queue
     // ─────────────────────────────────────────────
     @Transactional
-    public Booking bookSlot(String email, String slotNumber) {
+    public Booking bookSlot(String email, String slotNumber, String vehicleNumber) {
 
         // 1. Check existing active booking
         if (!bookingRepository.findByUserEmailAndActiveTrue(email).isEmpty()) {
@@ -127,7 +129,7 @@ public class BookingService {
             }
         }
 
-        return assignSlotToUser(email, slot);
+        return assignSlotToUser(email, slot, vehicleNumber);
     }
 
     // ─────────────────────────────────────────────
@@ -135,25 +137,41 @@ public class BookingService {
     // ─────────────────────────────────────────────
     @Transactional
     public Booking autoBookSlot(String email) {
-        return bookSlot(email, null);
+        return bookSlot(email, null, null);
+    }
+
+    // Called by scheduler for queue assignment on expiry
+    public Booking assignSlotToUserPublic(String email, ParkingSlot slot) {
+        Booking b = assignSlotToUser(email, slot, null);
+        messagingTemplate.convertAndSend("/topic/queue-assigned/" + email, b.getSlotNumber());
+        return b;
     }
 
     // ─────────────────────────────────────────────
     // 🔧 INTERNAL: assign slot and create booking
     // ─────────────────────────────────────────────
-    private Booking assignSlotToUser(String email, ParkingSlot slot) {
+    private Booking assignSlotToUser(String email, ParkingSlot slot, String vehicleNumber) {
         slot.setAvailable(false);
         slotRepository.save(slot);
 
         Booking booking = new Booking();
         booking.setUserEmail(email);
         booking.setSlotNumber(slot.getSlotNumber());
+        booking.setVehicleNumber(vehicleNumber);
         booking.setActive(true);
         Booking saved = bookingRepository.save(booking);
 
         ensureAvailableSlotExists();
         messagingTemplate.convertAndSend("/topic/slots", "UPDATED");
         return saved;
+    }
+
+    // ─────────────────────────────────────────────
+    // 🛡️ ADMIN FORCE RELEASE
+    // ─────────────────────────────────────────────
+    @Transactional
+    public Booking forceRelease(Long bookingId) {
+        return releaseSlot(bookingId);
     }
 
     // ─────────────────────────────────────────────
@@ -171,7 +189,9 @@ public class BookingService {
         booking.setExitTime(LocalDateTime.now());
         Duration duration = Duration.between(booking.getBookingTime(), booking.getExitTime());
         long hours = Math.max(1, (long) Math.ceil(duration.toMinutes() / 60.0));
-        booking.setCost(hours * 20.0);
+        double rate = configRepository.findById("hourly_rate")
+                .map(c -> Double.parseDouble(c.getValue())).orElse(20.0);
+        booking.setCost(hours * rate);
         booking.setActive(false);
         bookingRepository.save(booking);
 
@@ -182,7 +202,8 @@ public class BookingService {
             WaitingQueue queued = nextInQueue.get();
             waitingQueueRepository.delete(queued);
             // Auto-assign freed slot to queued user
-            assignSlotToUser(queued.getUserEmail(), slot);
+            Booking queuedBooking = assignSlotToUser(queued.getUserEmail(), slot, null);
+            messagingTemplate.convertAndSend("/topic/queue-assigned/" + queued.getUserEmail(), queuedBooking.getSlotNumber());
         } else {
             // No one waiting — just free the slot
             slot.setAvailable(true);
@@ -216,7 +237,8 @@ public class BookingService {
         if (nextInQueue.isPresent()) {
             WaitingQueue queued = nextInQueue.get();
             waitingQueueRepository.delete(queued);
-            assignSlotToUser(queued.getUserEmail(), slot);
+            Booking queuedBooking = assignSlotToUser(queued.getUserEmail(), slot, null);
+            messagingTemplate.convertAndSend("/topic/queue-assigned/" + queued.getUserEmail(), queuedBooking.getSlotNumber());
         } else {
             slot.setAvailable(true);
             slotRepository.save(slot);

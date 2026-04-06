@@ -16,9 +16,14 @@ public class ParkingSlotService {
     private ParkingSlotRepository slotRepository;
 
     public ParkingSlot addSlot(String slotNumber) {
+        return addSlot(slotNumber, 1);
+    }
+
+    public ParkingSlot addSlot(String slotNumber, int floor) {
         ParkingSlot slot = new ParkingSlot();
         slot.setSlotNumber(slotNumber);
         slot.setAvailable(true);
+        slot.setFloor(floor);
         return slotRepository.save(slot);
     }
 

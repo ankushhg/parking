@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.parking.model.ParkingSlot;
 import com.example.parking.model.User;
+import com.example.parking.model.ParkingConfig;
 import com.example.parking.repository.ParkingSlotRepository;
 import com.example.parking.repository.UserRepository;
+import com.example.parking.repository.ParkingConfigRepository;
 
 @Configuration
 public class DataLoader {
@@ -16,6 +18,7 @@ public class DataLoader {
     @Bean
     CommandLineRunner loadData(ParkingSlotRepository slotRepository,
                                UserRepository userRepository,
+                               ParkingConfigRepository configRepository,
                                PasswordEncoder passwordEncoder) {
         return args -> {
 
@@ -39,6 +42,12 @@ public class DataLoader {
                 admin.setRole("ADMIN");
                 userRepository.save(admin);
                 System.out.println("✅ Admin created → admin@parking.com / admin123");
+            }
+
+            // Seed default hourly rate
+            if (configRepository.findById("hourly_rate").isEmpty()) {
+                configRepository.save(new ParkingConfig("hourly_rate", "20"));
+                System.out.println("✅ Default hourly rate set: ₹20/hr");
             }
         };
     }

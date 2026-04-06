@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -28,5 +29,9 @@ public class User {
 
     private String password;
 
-    private String role; // USER or ADMIN
+    private String role;
+
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
 }
