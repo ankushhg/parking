@@ -2,9 +2,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  font-family: "Sora", "Segoe UI", sans-serif;
-  color: #171717;
-  background: #f6efe5;
+  font-family: "Lato", "Segoe UI", sans-serif;
+  color: #fff;
+  background: #0d0500;
 }
 
 html {
@@ -14,13 +14,7 @@ html {
 body {
   min-width: 320px;
   margin: 0;
-  background:
-    radial-gradient(circle at top, rgba(245, 158, 11, 0.12), transparent 28%),
-    linear-gradient(180deg, #fffdf9 0%, #f6efe5 100%);
-}
-
-html.dark body {
-  background: #0f0f0f;
+  background: #0d0500;
 }
 
 * {

@@ -32,58 +32,74 @@ export default function AdminDashboard() {
   useEffect(() => { document.title = "Admin Dashboard — ParkFlow"; }, []);
 
   const fetchSlots = async () => {
-    const res = await API.get("/slots/all");
-    setSlots(res.data);
+    const res = await API.get("/user/slots");
+    setSlots(res.data.map(s => ({ ...s, available: s.status === "AVAILABLE", slotNumber: s.slotNumber, floor: s.zone })));
   };
 
   const fetchAllBookings = async () => {
-    const res = await API.get("/admin/bookings");
-    setAllBookings(res.data);
-  };
-
-  const fetchQueue = async () => {
-    const res = await API.get("/admin/queue");
-    setQueue(res.data);
+    const res = await API.get("/admin/sessions");
+    setAllBookings(res.data.map(s => ({
+      id: s.sessionId,
+      userEmail: s.userPhone || s.userName,
+      slotNumber: s.slotNumber,
+      vehicleNumber: s.vehicleNumber,
+      active: s.status === "ACTIVE",
+      exitTime: s.checkOut,
+      bookingTime: s.checkIn,
+      cost: s.amountCharged,
+    })));
   };
 
   const fetchUsers = async () => {
     const res = await API.get("/admin/users");
-    setUsers(res.data);
+    setUsers(res.data.map(u => ({ ...u, totalBookings: 0, activeBookings: 0 })));
   };
 
   const fetchAnalytics = async () => {
-    const res = await API.get("/admin/analytics");
-    setAnalytics(res.data);
+    const res = await API.get("/admin/dashboard");
+    const d = res.data;
+    setAnalytics({
+      totalRevenue: d.totalRevenue,
+      totalBookings: d.activeSessions,
+      completedBookings: d.totalSessionsToday,
+      cancelledBookings: 0,
+      topSlots: [],
+      topUsers: [],
+    });
   };
 
   const fetchConfig = async () => {
-    const res = await API.get("/admin/config");
-    setHourlyRate(res.data.hourlyRate);
+    try {
+      const res = await API.get("/admin/rates");
+      if (res.data?.length > 0) setHourlyRate(res.data[0].ratePerHour ?? 20);
+    } catch { setHourlyRate(20); }
   };
 
   const saveRate = async () => {
     const val = parseFloat(rateInput);
     if (!val || val <= 0) return;
-    await API.put("/admin/config/rate", { hourlyRate: val });
-    setHourlyRate(val);
-    setEditingRate(false);
-    toast(`Hourly rate updated to ₹${val}/hr`, "success");
+    try {
+      await API.put("/admin/rates", { vehicleType: "TWO_WHEELER", ratePerHour: val });
+      setHourlyRate(val);
+      setEditingRate(false);
+      toast(`Hourly rate updated to ₹${val}/hr`, "success");
+    } catch { toast("Failed to update rate.", "error"); }
   };
 
   const addSlot = async () => {
     if (!newSlotNumber.trim()) return;
     try {
-      await API.post(`/admin/slot?slotNumber=${newSlotNumber.trim()}&floor=${newSlotFloor}`);
+      await API.post("/admin/slots", { slotNumber: newSlotNumber.trim(), zone: "ZONE_A", vehicleType: "TWO_WHEELER", status: "AVAILABLE" });
       setNewSlotNumber("");
       fetchSlots();
-      toast(`Slot ${newSlotNumber.trim()} added on Floor ${newSlotFloor}.`, "success");
+      toast(`Slot ${newSlotNumber.trim()} added.`, "success");
     } catch (err) {
-      toast(err.response?.data || "Failed to add slot.", "error");
+      toast(err.response?.data?.message || "Failed to add slot.", "error");
     }
   };
 
   useEffect(() => {
-    Promise.all([fetchSlots(), fetchAllBookings(), fetchQueue(), fetchUsers(), fetchConfig(), fetchAnalytics()]).finally(() => setLoading(false));
+    Promise.all([fetchSlots(), fetchAllBookings(), fetchUsers(), fetchConfig(), fetchAnalytics()]).finally(() => setLoading(false));
 
     const client = new Client({
       webSocketFactory: () => new SockJS("http://localhost:3955/ws"),
@@ -91,7 +107,6 @@ export default function AdminDashboard() {
         client.subscribe("/topic/slots", () => {
           fetchSlots();
           fetchAllBookings();
-          fetchQueue();
         });
       },
     });
@@ -108,11 +123,11 @@ const deleteSlot = (id) => {
     const id = confirmDelete;
     setConfirmDelete(null);
     try {
-      await API.delete(`/slots/${id}`);
+      await API.delete(`/admin/slots/${id}`);
       fetchSlots();
       toast("Slot deleted.", "info");
     } catch (err) {
-      toast(err.response?.data || "Failed to delete slot.", "error");
+      toast(err.response?.data?.message || "Failed to delete slot.", "error");
     }
   };
 
@@ -120,11 +135,11 @@ const deleteSlot = (id) => {
     const id = confirmForceRelease;
     setConfirmForceRelease(null);
     try {
-      await API.post(`/admin/force-release/${id}`);
-      fetchSlots(); fetchAllBookings(); fetchQueue();
+      await API.post(`/admin/sessions/${id}/checkout`);
+      fetchSlots(); fetchAllBookings();
       toast("Slot force-released.", "info");
     } catch (err) {
-      toast(err.response?.data || "Force release failed.", "error");
+      toast(err.response?.data?.message || "Force release failed.", "error");
     }
   };
 
@@ -172,7 +187,9 @@ const deleteSlot = (id) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f6efe5] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col">
+    <div className="min-h-screen dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col" style={{ background: "#0d0500", fontFamily: "'Lato',sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');`}</style>
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg,#ff6b00,#c9a84c,#ff6b00)", zIndex: 100 }} />
 
       {confirmDelete && (
         <ConfirmDialog
@@ -197,24 +214,22 @@ const deleteSlot = (id) => {
       )}
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/60 dark:bg-neutral-900/80 backdrop-blur-md border-b border-black/5 dark:border-white/5 w-full">
+      <header className="sticky z-50 w-full" style={{ top: 4, background: "rgba(13,5,0,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.2)" }}>
         <div className="flex items-center justify-between px-8 py-4 w-full">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-950 text-white font-black">
-              P
-            </div>
-            <span className="font-semibold text-lg tracking-tight">ParkFlow</span>
+          <Link to="/" className="flex items-center gap-2" style={{ textDecoration: "none" }}>
+            <span style={{ fontSize: "1.3rem" }}>🕉</span>
+            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "1rem", color: "#c9a84c", fontWeight: 700 }}>ParkFlow</span>
           </Link>
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900 border border-amber-200 dark:border-amber-700 px-3 py-1 text-xs font-semibold text-amber-700 dark:text-amber-300">
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 20, background: "rgba(201,168,76,0.1)", border: "1px solid rgba(201,168,76,0.3)", padding: "4px 12px", fontSize: "0.72rem", fontWeight: 700, color: "#f0d080", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>
               Admin
             </span>
-            <button onClick={toggle} className="rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-3 py-2 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition">
+            <button onClick={toggle} style={{ borderRadius: 20, border: "1px solid rgba(201,168,76,0.2)", background: "rgba(255,255,255,0.04)", padding: "6px 12px", fontSize: "0.85rem", cursor: "pointer", color: "#fff" }}>
               {dark ? "☀️" : "🌙"}
             </button>
             <button
               onClick={logout}
-              className="rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-4 py-2 text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:hover:bg-red-950 dark:hover:text-red-400 transition"
+              style={{ borderRadius: 20, border: "1px solid rgba(255,80,80,0.25)", background: "rgba(255,80,80,0.06)", padding: "6px 14px", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", color: "rgba(255,120,120,0.9)", fontFamily: "'Cinzel',serif", letterSpacing: 1, transition: "all 0.2s" }}
             >
               Log out
             </button>

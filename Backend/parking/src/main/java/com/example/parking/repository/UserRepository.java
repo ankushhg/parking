@@ -1,12 +1,15 @@
 package com.example.parking.repository;
 
-import java.util.Optional;
-
+import com.example.parking.entity.User;
+import com.example.parking.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.parking.model.User;
+import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-    Optional<User> findByResetToken(String resetToken);
+    Optional<User> findByPhone(String phone);
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
+    List<User> findByRole(Role role);
 }

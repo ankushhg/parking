@@ -1,60 +1,57 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const features = [
-  { title: "Live Availability", desc: "See open spots in real time before you arrive." },
-  { title: "Easy Reservations", desc: "Book a slot in seconds with instant confirmation." },
-  { title: "Ops Dashboard", desc: "Manage occupancy and bookings from one clean view." },
+const IMAGES = [
+  { src: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&q=85", caption: "Sharada Peetham — Main Temple" },
+  { src: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=85", caption: "Sharadamba Temple — Divine Sanctum" },
+  { src: "https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85", caption: "Temple Complex — Sacred Grounds" },
+  { src: "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=1920&q=85", caption: "Vidyashankara Temple — Ancient Architecture" },
+  { src: "https://images.unsplash.com/photo-1600697395543-a6c6b0b4b9c0?w=1920&q=85", caption: "Tunga River — Holy Waters" },
 ];
 
-const steps = [
-  { id: "01", title: "Create an account", desc: "Sign up in under a minute." },
-  { id: "02", title: "Find a spot", desc: "Browse live availability and pick your slot." },
-  { id: "03", title: "Park with ease", desc: "Show up, park, and skip the search." },
+const FEATURES = [
+  { icon: "🚗", title: "Instant Check-In", desc: "Auto-assign or choose your preferred zone. Real-time slot availability at your fingertips." },
+  { icon: "📍", title: "Zone Selection", desc: "Three dedicated zones — A, B & C — for two-wheelers, four-wheelers, and heavy vehicles." },
+  { icon: "💰", title: "Transparent Billing", desc: "Automated fare calculation. Pay only for what you use with clear hourly rates." },
+  { icon: "♿", title: "Handicap Reserved", desc: "Dedicated slots A-01 & A-02 reserved for differently-abled devotees." },
+  { icon: "🔔", title: "Live Updates", desc: "WebSocket-powered real-time slot status. Always know what's available instantly." },
+  { icon: "📜", title: "Parking History", desc: "Complete session history with digital receipts for every visit." },
+];
+
+const STATS = [
+  { number: "60", label: "Total Slots" },
+  { number: "3", label: "Parking Zones" },
+  { number: "24/7", label: "Live Monitoring" },
+  { number: "₹10", label: "Starting Rate" },
 ];
 
 function ContactForm() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
-
-  function handleChange(e) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+  const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const handleSubmit = (e) => { e.preventDefault(); setSubmitted(true); };
 
   return (
-    <div className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
+    <div style={styles.card}>
       {submitted ? (
-        <div className="flex flex-col items-center justify-center h-full gap-3 text-center py-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-950 text-white text-xl">✓</div>
-          <h3 className="font-semibold text-neutral-950">Message sent!</h3>
-          <p className="text-sm text-neutral-600">Thanks for reaching out. We’ll get back to you soon.</p>
+        <div style={{ textAlign: "center", padding: "32px 0" }}>
+          <div style={{ ...styles.omSmall, fontSize: "2rem", marginBottom: 12 }}>✓</div>
+          <p style={{ ...styles.cinzel, color: "#c9a84c", marginBottom: 6 }}>Message Sent!</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem" }}>We'll get back to you soon.</p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {[["name", "text", "Your Name"], ["email", "email", "you@example.com"]].map(([name, type, ph]) => (
+            <div key={name}>
+              <label style={styles.label}>{name}</label>
+              <input name={name} type={type} value={form[name]} onChange={handleChange} required placeholder={ph} style={styles.input} />
+            </div>
+          ))}
           <div>
-            <label className="block text-xs font-semibold text-neutral-500 mb-1">Name</label>
-            <input name="name" value={form.name} onChange={handleChange} required placeholder="Your name"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
+            <label style={styles.label}>Message</label>
+            <textarea name="message" value={form.message} onChange={handleChange} required rows={4} placeholder="How can we help?" style={{ ...styles.input, resize: "none" }} />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-neutral-500 mb-1">Email</label>
-            <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="you@example.com"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-neutral-500 mb-1">Message</label>
-            <textarea name="message" value={form.message} onChange={handleChange} required rows={5} placeholder="How can we help?"
-              className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition resize-none" />
-          </div>
-          <button type="submit"
-            className="rounded-full bg-neutral-950 px-6 py-3 text-sm font-bold text-white! shadow-md shadow-black/30 hover:bg-neutral-800 transition">
-            Send message
-          </button>
+          <button type="submit" style={styles.btnPrimary}>Send Message</button>
         </form>
       )}
     </div>
@@ -63,203 +60,202 @@ function ContactForm() {
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const closeMenu = () => setMenuOpen(false);
+  const [activeSection, setActiveSection] = useState(null);
 
-  useEffect(() => { document.title = "ParkFlow — Smart Parking, Simplified"; }, []);
+  useEffect(() => {
+    document.title = "ParkFlow — Sringeri Temple Parking";
+  }, []);
+
+  const toggleSection = (section) =>
+    setActiveSection((prev) => (prev === section ? null : section));
+
   return (
-    <div className="min-h-screen bg-[#f6efe5] text-neutral-900 flex flex-col">
+    <div style={{ fontFamily: "'Lato', sans-serif", background: "#0d0500", color: "#fff", overflowX: "hidden" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');
+        @keyframes zoomSlow { from { transform: scale(1.06); } to { transform: scale(1.0); } }
+        @keyframes pulse {
+          0%,100% { text-shadow: 0 0 35px rgba(201,168,76,0.9), 0 0 70px rgba(201,168,76,0.5); }
+          50%      { text-shadow: 0 0 55px rgba(201,168,76,1), 0 0 100px rgba(201,168,76,0.8); }
+        }
+        @keyframes shimmer { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+        .temple-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(255,107,0,0.65) !important; }
+        .temple-btn-outline:hover { background: rgba(201,168,76,0.2) !important; transform: translateY(-3px); }
+        .temple-btn-admin:hover   { background: rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.85) !important; transform: translateY(-2px); }
+        .feature-card:hover { border-color: #c9a84c !important; transform: translateY(-4px); box-shadow: 0 12px 40px rgba(201,168,76,0.15) !important; }
+        .nav-link:hover { color: #fff !important; }
+        .dot-btn:hover { background: rgba(201,168,76,0.6) !important; }
+      `}</style>
 
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-md border-b border-black/5 w-full">
-        <div className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-950 text-white font-black">
-              P
+      {/* ── TOP ACCENT BAR ── */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg,#ff6b00,#c9a84c,#ff6b00)", zIndex: 100 }} />
+
+      {/* ── HERO ── */}
+      <section style={{ position: "relative", height: "100vh", minHeight: 600, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+        {/* Background Image */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url('${IMAGES[0].src}')`, backgroundSize: "cover", backgroundPosition: "center", animation: "zoomSlow 8s ease-in-out forwards" }} />
+
+        {/* Overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(10,4,0,0.50) 0%, rgba(26,10,0,0.30) 35%, rgba(10,4,0,0.72) 75%, rgba(10,4,0,0.97) 100%)", zIndex: 1 }} />
+
+        {/* Navbar */}
+        <nav style={{ position: "absolute", top: 4, left: 0, right: 0, zIndex: 10, background: "rgba(0,0,0,0.30)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+              <span style={{ fontSize: "1.5rem", lineHeight: 1 }}>🕉</span>
+              <span style={{ ...styles.cinzel, fontSize: "1.1rem", color: "#c9a84c", fontWeight: 700 }}>ParkFlow</span>
+            </Link>
+            <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+              {["Features", "About", "Contact"].map((l) => (
+                <a key={l} href="#" onClick={(e) => { e.preventDefault(); toggleSection(l.toLowerCase()); }} className="nav-link" style={{ color: activeSection === l.toLowerCase() ? "#c9a84c" : "rgba(255,255,255,0.75)", fontSize: "0.85rem", letterSpacing: 1, textDecoration: "none", transition: "color 0.2s", fontFamily: "'Cinzel',serif" }}>{l}</a>
+              ))}
+              <Link to="/login" style={{ ...styles.btnOutlineSmall }}>Log in</Link>
+              <Link to="/admin/login" style={{ ...styles.btnAdminSmall }} className="temple-btn-admin">Admin</Link>
             </div>
-            <span className="font-semibold text-lg tracking-tight">ParkFlow</span>
-          </Link>
+          </div>
+        </nav>
 
-          {/* Nav links - hidden on mobile */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm font-medium text-neutral-600 hover:text-neutral-950 transition">Features</a>
-            <a href="#how-it-works" className="text-sm font-medium text-neutral-600 hover:text-neutral-950 transition">How it works</a>
-            <a href="#about" className="text-sm font-medium text-neutral-600 hover:text-neutral-950 transition">About</a>
-            <a href="#contact" className="text-sm font-medium text-neutral-600 hover:text-neutral-950 transition">Contact</a>
-          </nav>
+        {/* Hero Content */}
+        <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 20px", maxWidth: 860 }}>
+          <span style={{ fontSize: "3.8rem", display: "block", marginBottom: 14, animation: "pulse 3.5s ease-in-out infinite", filter: "drop-shadow(0 0 20px rgba(255,107,0,0.3))" }}>🕉</span>
+          <p style={{ ...styles.cinzel, fontSize: "0.88rem", letterSpacing: 7, color: "#f0d080", marginBottom: 16, opacity: 0.95, textShadow: "0 2px 10px rgba(0,0,0,0.7)" }}>
+            SRINGERI SHARADA PEETHAM
+          </p>
+          <h1 style={{ ...styles.cinzel, fontSize: "clamp(2.2rem, 5.5vw, 4rem)", fontWeight: 700, lineHeight: 1.2, color: "#fff", textShadow: "0 3px 25px rgba(0,0,0,0.9)", marginBottom: 10 }}>
+            Sacred Temple<br />
+            <span style={{ color: "#c9a84c", textShadow: "0 3px 25px rgba(0,0,0,0.9), 0 0 50px rgba(201,168,76,0.4)" }}>Parking System</span>
+          </h1>
+          <p style={{ fontSize: "clamp(0.95rem,2vw,1.15rem)", color: "rgba(255,255,255,0.82)", fontWeight: 300, letterSpacing: 1, marginBottom: 40, textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>
+            Seamless parking management for devotees visiting the divine abode
+          </p>
 
-          {/* CTA buttons + hamburger */}
-          <div className="flex items-center gap-3">
-            <Link to="/login" className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold hover:bg-neutral-50 transition">
-              Log in
-            </Link>
-            <Link to="/register" className="hidden sm:block rounded-full bg-neutral-950 px-4 py-2 text-sm font-bold text-white! shadow-md shadow-black/30 hover:bg-neutral-800 transition">
-              Get started
-            </Link>
-            {/* Hamburger - visible on mobile only */}
-            <button
-              onClick={() => setMenuOpen((o) => !o)}
-              className="md:hidden flex flex-col justify-center items-center h-9 w-9 rounded-xl border border-black/10 bg-white gap-1.5 hover:bg-neutral-50 transition"
-              aria-label="Toggle menu"
-            >
-              <span className={`block h-0.5 w-4 bg-neutral-700 transition-all ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-              <span className={`block h-0.5 w-4 bg-neutral-700 transition-all ${menuOpen ? "opacity-0" : ""}`} />
-              <span className={`block h-0.5 w-4 bg-neutral-700 transition-all ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
-            </button>
+          {/* Divider */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 36 }}>
+            <div style={{ width: 80, height: 1, background: "linear-gradient(90deg,transparent,#c9a84c)" }} />
+            <div style={{ width: 8, height: 8, background: "#c9a84c", transform: "rotate(45deg)" }} />
+            <div style={{ width: 80, height: 1, background: "linear-gradient(90deg,#c9a84c,transparent)" }} />
+          </div>
+
+          {/* Buttons */}
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link to="/register" className="temple-btn-primary" style={styles.btnPrimary}>Devotee Login</Link>
+            <Link to="/login" className="temple-btn-outline" style={styles.btnOutline}>Register</Link>
+            <Link to="/admin/login" className="temple-btn-admin" style={styles.btnAdmin}>Admin Login</Link>
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className="md:hidden border-t border-black/5 bg-white/90 backdrop-blur-md px-6 py-4 flex flex-col gap-3">
-            <a href="#features" onClick={closeMenu} className="text-sm font-medium text-neutral-700 hover:text-neutral-950 transition py-1">Features</a>
-            <a href="#how-it-works" onClick={closeMenu} className="text-sm font-medium text-neutral-700 hover:text-neutral-950 transition py-1">How it works</a>
-            <a href="#about" onClick={closeMenu} className="text-sm font-medium text-neutral-700 hover:text-neutral-950 transition py-1">About</a>
-            <a href="#contact" onClick={closeMenu} className="text-sm font-medium text-neutral-700 hover:text-neutral-950 transition py-1">Contact</a>
-            <div className="pt-2 border-t border-black/5">
-              <Link to="/register" onClick={closeMenu} className="block w-full text-center rounded-full bg-neutral-950 px-4 py-2.5 text-sm font-bold text-white! shadow-md shadow-black/30 hover:bg-neutral-800 transition">
-                Get started
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
-
-      {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-16 sm:py-24 w-full">
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-5xl max-w-xl">
-          Smart parking, simplified.
-        </h1>
-        <p className="mt-4 max-w-md text-base leading-7 text-neutral-600">
-          Reserve a spot, check live availability, and manage your parking — all in one place.
-        </p>
-        <div className="mt-8 flex gap-3">
-          <Link to="/register" className="rounded-full bg-neutral-950 px-6 py-3 text-sm font-bold text-white! shadow-lg shadow-black/30 hover:bg-neutral-800 transition">
-            Get started
-          </Link>
-          <Link to="/login" className="rounded-full border border-black/10 bg-white px-5 py-2.5 text-sm font-semibold hover:bg-neutral-50 transition">
-            Log in
-          </Link>
+        {/* Caption */}
+        <div style={{ position: "absolute", bottom: 70, left: "50%", transform: "translateX(-50%)", zIndex: 3, opacity: 1, transition: "opacity 0.8s", whiteSpace: "nowrap" }}>
+          <span style={{ ...styles.cinzel, fontSize: "0.75rem", letterSpacing: 4, color: "rgba(240,208,128,0.85)", background: "rgba(0,0,0,0.35)", padding: "5px 18px", border: "1px solid rgba(201,168,76,0.25)", borderRadius: 2 }}>
+            {IMAGES[0].caption}
+          </span>
         </div>
+
+
       </section>
 
-      {/* Features */}
-      <section id="features" className="max-w-6xl mx-auto w-full px-6 py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-neutral-950 mb-8 text-center">Why ParkFlow?</h2>
-        <div className="grid gap-5 sm:grid-cols-3">
-          {features.map((f) => (
-            <div key={f.title} className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
-              <h3 className="font-semibold text-neutral-950">{f.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-neutral-600">{f.desc}</p>
+      {/* ── STATS BAR ── */}
+      <div style={{ background: "linear-gradient(135deg,#1a0800,#2d1200)", borderTop: "2px solid #c9a84c", borderBottom: "1px solid rgba(201,168,76,0.2)", padding: "28px 20px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 20 }}>
+          {STATS.map(({ number, label }) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <div style={{ ...styles.cinzel, fontSize: "2rem", fontWeight: 700, color: "#c9a84c" }}>{number}</div>
+              <div style={{ fontSize: "0.78rem", letterSpacing: 2, color: "rgba(255,255,255,0.6)", textTransform: "uppercase", marginTop: 4 }}>{label}</div>
             </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* How it works */}
-      <section id="how-it-works" className="max-w-6xl mx-auto w-full px-6 py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-neutral-950 mb-8 text-center">How it works</h2>
-        <div className="grid gap-5 sm:grid-cols-3">
-          {steps.map((s) => (
-            <div key={s.id} className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
-              <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">{s.id}</span>
-              <h3 className="mt-2 font-semibold text-neutral-950">{s.title}</h3>
-              <p className="mt-1 text-sm leading-6 text-neutral-600">{s.desc}</p>
+      {/* ── FEATURES ── */}
+      {activeSection === "features" && <section id="features" style={{ padding: "80px 20px", background: "#0d0500" }}>
+        <div style={{ textAlign: "center", marginBottom: 56 }}>
+          <h2 style={{ ...styles.cinzel, fontSize: "clamp(1.5rem,3vw,2.2rem)", color: "#c9a84c", marginBottom: 12 }}>🙏 Devotee Services</h2>
+          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.95rem" }}>Everything you need for a peaceful temple visit</p>
+        </div>
+        <div style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 24 }}>
+          {FEATURES.map(({ icon, title, desc }) => (
+            <div key={title} className="feature-card" style={styles.card}>
+              <div style={{ fontSize: "2.4rem", marginBottom: 16 }}>{icon}</div>
+              <h3 style={{ ...styles.cinzel, fontSize: "1rem", color: "#f0d080", marginBottom: 10 }}>{title}</h3>
+              <p style={{ fontSize: "0.88rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>{desc}</p>
             </div>
           ))}
         </div>
-      </section>
+      </section>}
 
-      {/* About */}
-      <section id="about" className="max-w-6xl mx-auto w-full px-6 py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-neutral-950 mb-8 text-center">About ParkFlow</h2>
-        <div className="rounded-2xl bg-white/80 border border-black/5 p-8 shadow-sm flex flex-col sm:flex-row gap-8 items-center">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-neutral-950 text-white font-black text-3xl">
-            P
+      {/* ── ABOUT ── */}
+      {activeSection === "about" && <section id="about" style={{ padding: "60px 20px", background: "#100600" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ ...styles.cinzel, fontSize: "clamp(1.5rem,3vw,2rem)", color: "#c9a84c", textAlign: "center", marginBottom: 40 }}>About ParkFlow</h2>
+          <div style={{ ...styles.card, display: "flex", flexWrap: "wrap", gap: 32, alignItems: "center" }}>
+            <span style={{ fontSize: "3rem" }}>🕌</span>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <p style={{ fontSize: "0.9rem", lineHeight: 1.8, color: "rgba(255,255,255,0.65)", marginBottom: 24 }}>
+                ParkFlow was built to serve the devotees of Sri Sringeri Sharada Peetham. We believe smart infrastructure should support the spiritual experience — from daily visitors to operators managing hundreds of spaces.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 16 }}>
+                {[["Simplicity", "Friction-free parking for every devotee."], ["Transparency", "Real-time data, no surprises."], ["Reliability", "Available when you need it most."]].map(([t, d]) => (
+                  <div key={t}>
+                    <p style={{ ...styles.cinzel, fontSize: "0.85rem", color: "#f0d080", marginBottom: 4 }}>{t}</p>
+                    <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-sm leading-7 text-neutral-600">
-              ParkFlow was built to eliminate the daily frustration of finding a parking spot. We believe smart infrastructure should be accessible to everyone — from daily commuters to parking operators managing hundreds of spaces.
-            </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {[
-                { title: "Simplicity", desc: "We remove friction from every step of the parking experience." },
-                { title: "Transparency", desc: "Real-time data means no surprises — for drivers or operators." },
-                { title: "Reliability", desc: "Our platform is built to be available when you need it most." },
-              ].map((v) => (
-                <div key={v.title}>
-                  <p className="font-semibold text-neutral-950 text-sm">{v.title}</p>
-                  <p className="mt-1 text-xs leading-5 text-neutral-500">{v.desc}</p>
+        </div>
+      </section>}
+
+      {/* ── CONTACT ── */}
+      {activeSection === "contact" && <section id="contact" style={{ padding: "60px 20px", background: "#0d0500" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <h2 style={{ ...styles.cinzel, fontSize: "clamp(1.5rem,3vw,2rem)", color: "#c9a84c", textAlign: "center", marginBottom: 40 }}>Get in Touch</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 24 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {[["📧 Email", "support@sringeri.temple"], ["📍 Location", "Sringeri, Chikkamagaluru District\nKarnataka, India"], ["⏱ Response", "We typically respond within 1 business day."]].map(([t, d]) => (
+                <div key={t} style={styles.card}>
+                  <p style={{ ...styles.cinzel, fontSize: "0.85rem", color: "#f0d080", marginBottom: 6 }}>{t}</p>
+                  <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.55)", whiteSpace: "pre-line" }}>{d}</p>
                 </div>
               ))}
             </div>
+            <ContactForm />
           </div>
         </div>
-      </section>
+      </section>}
 
-      {/* Contact */}
-      <section id="contact" className="max-w-6xl mx-auto w-full px-6 py-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-neutral-950 mb-8 text-center">Get in touch</h2>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {/* Info cards */}
-          <div className="flex flex-col gap-4">
-            <div className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
-              <h3 className="font-semibold text-neutral-950 mb-1">Email us</h3>
-              <p className="text-sm text-neutral-600">support@parkflow.io</p>
-            </div>
-            <div className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
-              <h3 className="font-semibold text-neutral-950 mb-1">Office</h3>
-              <p className="text-sm text-neutral-600">123 Parking Ave, Suite 400<br />San Francisco, CA 94103</p>
-            </div>
-            <div className="rounded-2xl bg-white/80 border border-black/5 p-6 shadow-sm">
-              <h3 className="font-semibold text-neutral-950 mb-1">Response time</h3>
-              <p className="text-sm text-neutral-600">We typically respond within 1 business day.</p>
-            </div>
-          </div>
-
-          {/* Form */}
-          <ContactForm />
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="mt-auto border-t border-black/10 bg-white/40">
-        <div className="max-w-6xl mx-auto w-full px-6 py-10 grid gap-8 grid-cols-1 sm:grid-cols-3">
-          {/* Brand */}
-          <div>
-            <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neutral-950 text-white font-black text-sm">
-                P
-              </div>
-              <span className="font-semibold tracking-tight">ParkFlow</span>
-            </Link>
-            <p className="text-sm text-neutral-500 leading-6">Smart parking, simplified. Reserve spots and manage occupancy in real time.</p>
-          </div>
-
-          {/* Product */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-3">Product</h4>
-            <ul className="space-y-2 text-sm text-neutral-600">
-              <li><Link to="/register" className="hover:text-neutral-950 transition">Get started</Link></li>
-              <li><Link to="/login" className="hover:text-neutral-950 transition">Log in</Link></li>
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-400 mb-3">Company</h4>
-            <ul className="space-y-2 text-sm text-neutral-600">
-              <li><a href="#about" className="hover:text-neutral-950 transition">About</a></li>
-              <li><a href="#contact" className="hover:text-neutral-950 transition">Contact</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-black/10 py-4 text-center text-xs text-neutral-400">
-          © {new Date().getFullYear()} ParkFlow. All rights reserved.
-        </div>
+      {/* ── FOOTER ── */}
+      <footer style={{ background: "#080300", borderTop: "1px solid rgba(201,168,76,0.2)", padding: "32px 20px", textAlign: "center" }}>
+        <div style={{ fontSize: "1.6rem", color: "#c9a84c", marginBottom: 8 }}>🕉</div>
+        <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", letterSpacing: 1 }}>Sringeri Sharada Peetham &nbsp;|&nbsp; Parking Management System</p>
+        <p style={{ marginTop: 6, fontSize: "0.8rem", color: "rgba(255,255,255,0.25)" }}>
+          Built with devotion &nbsp;·&nbsp;
+          <a href="mailto:support@sringeri.temple" style={{ color: "#c9a84c", textDecoration: "none" }}>support@sringeri.temple</a>
+        </p>
+        <div style={{ margin: "18px auto 0", height: 2, background: "linear-gradient(90deg,transparent,#c9a84c,transparent)", maxWidth: 300 }} />
+        <p style={{ marginTop: 12, fontSize: "0.7rem", letterSpacing: 3, color: "rgba(201,168,76,0.4)", textTransform: "uppercase" }}>ॐ श्री शारदाम्बायै नमः</p>
+        <p style={{ marginTop: 16, fontSize: "0.72rem", color: "rgba(255,255,255,0.2)" }}>© {new Date().getFullYear()} ParkFlow. All rights reserved.</p>
       </footer>
-
     </div>
   );
 }
+
+const styles = {
+  cinzel: { fontFamily: "'Cinzel', serif" },
+  card: {
+    background: "linear-gradient(145deg,#1e0c02,#150800)",
+    border: "1px solid rgba(201,168,76,0.2)",
+    borderRadius: 8,
+    padding: "28px 24px",
+    transition: "all 0.3s ease",
+  },
+  label: { display: "block", fontSize: "0.72rem", letterSpacing: 2, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 7, fontFamily: "'Lato',sans-serif" },
+  input: { width: "100%", padding: "11px 14px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 4, color: "#fff", fontSize: "0.95rem", outline: "none", boxSizing: "border-box" },
+  btnPrimary: { padding: "14px 36px", borderRadius: 3, fontFamily: "'Cinzel',serif", fontSize: "0.9rem", letterSpacing: 2, textDecoration: "none", cursor: "pointer", border: "none", transition: "all 0.3s ease", textTransform: "uppercase", background: "linear-gradient(135deg,#ff6b00,#c04500)", color: "#fff", boxShadow: "0 4px 24px rgba(255,107,0,0.45)", display: "inline-block" },
+  btnOutline: { padding: "13px 34px", borderRadius: 3, fontFamily: "'Cinzel',serif", fontSize: "0.9rem", letterSpacing: 2, textDecoration: "none", cursor: "pointer", transition: "all 0.3s ease", textTransform: "uppercase", background: "rgba(201,168,76,0.08)", color: "#f0d080", border: "1.5px solid #c9a84c", display: "inline-block" },
+  btnAdmin: { padding: "12px 24px", borderRadius: 3, fontFamily: "'Cinzel',serif", fontSize: "0.78rem", letterSpacing: 1.5, textDecoration: "none", cursor: "pointer", transition: "all 0.3s ease", textTransform: "uppercase", background: "transparent", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.2)", display: "inline-block" },
+  btnOutlineSmall: { padding: "7px 18px", borderRadius: 3, fontFamily: "'Cinzel',serif", fontSize: "0.75rem", letterSpacing: 1.5, textDecoration: "none", background: "rgba(201,168,76,0.08)", color: "#f0d080", border: "1px solid rgba(201,168,76,0.4)", transition: "all 0.2s" },
+  btnAdminSmall: { padding: "7px 18px", borderRadius: 3, fontFamily: "'Cinzel',serif", fontSize: "0.75rem", letterSpacing: 1.5, textDecoration: "none", background: "transparent", color: "rgba(255,255,255,0.45)", border: "1px solid rgba(255,255,255,0.15)", transition: "all 0.2s" },
+  omSmall: { color: "#c9a84c", display: "block" },
+};

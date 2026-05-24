@@ -2,8 +2,16 @@ import { useState, useEffect } from "react";
 import API from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 
+const Divider = () => (
+  <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "20px 0" }}>
+    <div style={{ flex: 1, height: 1, background: "rgba(201,168,76,0.2)" }} />
+    <div style={{ width: 6, height: 6, background: "#c9a84c", transform: "rotate(45deg)", flexShrink: 0 }} />
+    <div style={{ flex: 1, height: 1, background: "rgba(201,168,76,0.2)" }} />
+  </div>
+);
+
 export default function ForgotPassword() {
-  const [step, setStep] = useState(1); // 1 = enter email, 2 = enter token + new password
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -21,7 +29,6 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       const res = await API.post("/auth/forgot-password", { email });
-      // For demo: auto-fill the token from response
       setToken(res.data.resetToken);
       setStep(2);
     } catch (err) {
@@ -49,138 +56,114 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6efe5] flex flex-col">
+    <div style={s.page}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');
+        .t-input:focus { border-color: #c9a84c !important; box-shadow: 0 0 0 3px rgba(201,168,76,0.12) !important; }
+        .t-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,0,0.55) !important; }
+        .t-link:hover { color: #f0d080 !important; }
+      `}</style>
 
-      {/* Header */}
-      <header className="w-full px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 w-fit">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-950 text-white font-black">P</div>
-          <span className="font-semibold text-lg tracking-tight text-neutral-900">ParkFlow</span>
-        </Link>
-      </header>
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg,#ff6b00,#c9a84c,#ff6b00)", zIndex: 100 }} />
 
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
+      <div style={s.card}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <span style={{ fontSize: "2rem", display: "block", marginBottom: 10 }}>🕉</span>
+            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "1.3rem", color: "#c9a84c", fontWeight: 700 }}>ParkFlow</span>
+          </Link>
+          <Divider />
 
-          <div className="rounded-3xl bg-white/80 border border-black/5 shadow-xl shadow-black/5 p-8 sm:p-10">
-
-            {/* Step indicator */}
-            <div className="flex items-center gap-2 mb-8">
-              {[1, 2].map(s => (
-                <div key={s} className="flex items-center gap-2">
-                  <div className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition
-                    ${step >= s ? "bg-neutral-950 text-white" : "bg-neutral-100 text-neutral-400"}`}>
-                    {s}
-                  </div>
-                  {s < 2 && <div className={`h-px w-8 ${step > s ? "bg-neutral-950" : "bg-neutral-200"}`} />}
+          {/* Step indicator */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 16 }}>
+            {[1, 2].map(n => (
+              <div key={n} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 700, background: step >= n ? "linear-gradient(135deg,#ff6b00,#c04500)" : "rgba(255,255,255,0.08)", color: step >= n ? "#fff" : "rgba(255,255,255,0.3)", border: step >= n ? "none" : "1px solid rgba(255,255,255,0.1)" }}>
+                  {n}
                 </div>
-              ))}
-              <span className="ml-2 text-xs text-neutral-500 font-medium">
-                {step === 1 ? "Enter your email" : "Set new password"}
-              </span>
-            </div>
-
-            {/* Title */}
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold tracking-tight text-neutral-950">
-                {step === 1 ? "Forgot password?" : "Reset your password"}
-              </h1>
-              <p className="mt-1.5 text-sm text-neutral-500">
-                {step === 1
-                  ? "Enter your email and we'll generate a reset token."
-                  : "Enter the reset token and your new password."}
-              </p>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="mb-5 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">{error}</div>
-            )}
-
-            {/* Success */}
-            {success && (
-              <div className="mb-5 rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-sm text-emerald-700">{success}</div>
-            )}
-
-            {/* Step 1 — Email */}
-            {step === 1 && (
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Email address</label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleForgot()}
-                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-neutral-900 outline-none focus:ring-2 focus:ring-neutral-950/20 transition placeholder:text-neutral-400"
-                  />
-                </div>
-                <button
-                  onClick={handleForgot}
-                  disabled={loading}
-                  className="w-full rounded-full bg-neutral-950 px-6 py-3 text-sm font-bold text-white! shadow-md shadow-black/20 hover:bg-neutral-800 transition disabled:opacity-60"
-                >
-                  {loading ? "Sending…" : "Get reset token"}
-                </button>
+                {n < 2 && <div style={{ width: 32, height: 1, background: step > n ? "#c9a84c" : "rgba(255,255,255,0.1)" }} />}
               </div>
-            )}
-
-            {/* Step 2 — Token + New Password */}
-            {step === 2 && (
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Reset token</label>
-                  <input
-                    type="text"
-                    placeholder="Paste your reset token"
-                    value={token}
-                    onChange={e => setToken(e.target.value)}
-                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-neutral-900 outline-none focus:ring-2 focus:ring-neutral-950/20 transition placeholder:text-neutral-400 font-mono"
-                  />
-                  <p className="mt-1.5 text-xs text-emerald-600 font-medium">✓ Token auto-filled from response (demo mode)</p>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-neutral-500 mb-1.5">New password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={newPassword}
-                      onChange={e => setNewPassword(e.target.value)}
-                      onKeyDown={e => e.key === "Enter" && handleReset()}
-                      className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 pr-11 text-sm text-neutral-900 outline-none focus:ring-2 focus:ring-neutral-950/20 transition placeholder:text-neutral-400"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(p => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 transition text-xs font-semibold"
-                    >
-                      {showPassword ? "Hide" : "Show"}
-                    </button>
-                  </div>
-                </div>
-                <button
-                  onClick={handleReset}
-                  disabled={loading}
-                  className="w-full rounded-full bg-neutral-950 px-6 py-3 text-sm font-bold text-white! shadow-md shadow-black/20 hover:bg-neutral-800 transition disabled:opacity-60"
-                >
-                  {loading ? "Resetting…" : "Reset password"}
-                </button>
-                <button onClick={() => { setStep(1); setError(""); }} className="text-xs text-neutral-400 hover:text-neutral-600 transition text-center">
-                  ← Back to email
-                </button>
-              </div>
-            )}
-
+            ))}
+            <span style={{ marginLeft: 8, fontSize: "0.72rem", color: "rgba(255,255,255,0.4)", letterSpacing: 1 }}>
+              {step === 1 ? "Enter email" : "Set new password"}
+            </span>
           </div>
 
-          <p className="mt-6 text-center text-sm text-neutral-400">
-            <Link to="/login" className="hover:text-neutral-600 transition">← Back to login</Link>
+          <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: "1.1rem", color: "#fff", marginBottom: 4 }}>
+            {step === 1 ? "Forgot Password?" : "Reset Password"}
+          </h1>
+          <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)" }}>
+            {step === 1 ? "Enter your email to get a reset token." : "Enter the token and your new password."}
           </p>
-
         </div>
+
+        {error && <div style={s.error}>{error}</div>}
+        {success && <div style={s.success}>{success}</div>}
+
+        {step === 1 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div>
+              <label style={s.label}>Email Address</label>
+              <input type="email" placeholder="you@example.com" value={email}
+                onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleForgot()}
+                className="t-input" style={s.input} />
+            </div>
+            <button onClick={handleForgot} disabled={loading} className="t-btn"
+              style={{ ...s.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}>
+              {loading ? "Sending…" : "Get Reset Token"}
+            </button>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div>
+              <label style={s.label}>Reset Token</label>
+              <input type="text" placeholder="Paste your reset token" value={token}
+                onChange={e => setToken(e.target.value)}
+                className="t-input" style={{ ...s.input, fontFamily: "monospace" }} />
+              <p style={{ marginTop: 6, fontSize: "0.72rem", color: "#10b981" }}>✓ Token auto-filled (demo mode)</p>
+            </div>
+            <div>
+              <label style={s.label}>New Password</label>
+              <div style={{ position: "relative" }}>
+                <input type={showPassword ? "text" : "password"} placeholder="••••••••" value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleReset()}
+                  className="t-input" style={{ ...s.input, paddingRight: 56 }} />
+                <button type="button" onClick={() => setShowPassword(p => !p)}
+                  style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: "0.72rem", cursor: "pointer", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}>
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+            <button onClick={handleReset} disabled={loading} className="t-btn"
+              style={{ ...s.btnPrimary, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}>
+              {loading ? "Resetting…" : "Reset Password"}
+            </button>
+            <button onClick={() => { setStep(1); setError(""); }}
+              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.35)", fontSize: "0.78rem", cursor: "pointer", letterSpacing: 1, transition: "color 0.2s" }}
+              className="t-link">
+              ← Back to email
+            </button>
+          </div>
+        )}
+
+        <Divider />
+
+        <Link to="/login" className="t-link" style={{ display: "block", textAlign: "center", fontSize: "0.78rem", color: "rgba(255,255,255,0.25)", textDecoration: "none", letterSpacing: 1, transition: "color 0.2s" }}>
+          ← Back to login
+        </Link>
       </div>
     </div>
   );
 }
+
+const s = {
+  page: { fontFamily: "'Lato',sans-serif", minHeight: "100vh", background: "#0d0500", display: "flex", alignItems: "center", justifyContent: "center", padding: "20px 16px" },
+  card: { background: "linear-gradient(160deg,rgba(30,12,2,0.97),rgba(18,6,0,0.99))", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 10, padding: "44px 40px", width: "100%", maxWidth: 420, boxShadow: "0 30px 80px rgba(0,0,0,0.7)" },
+  label: { display: "block", fontSize: "0.72rem", letterSpacing: 2, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 7 },
+  input: { width: "100%", padding: "12px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: 5, color: "#fff", fontSize: "0.95rem", outline: "none", transition: "border-color 0.25s, box-shadow 0.25s", boxSizing: "border-box" },
+  btnPrimary: { padding: "14px", background: "linear-gradient(135deg,#ff6b00,#c04500)", color: "#fff", border: "none", borderRadius: 5, fontFamily: "'Cinzel',serif", fontSize: "0.9rem", letterSpacing: 2.5, transition: "all 0.3s", boxShadow: "0 4px 20px rgba(255,107,0,0.35)", textTransform: "uppercase", display: "block", width: "100%" },
+  error: { background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)", borderRadius: 4, padding: "10px 14px", marginBottom: 20, fontSize: "0.82rem", color: "#ff7070", textAlign: "center" },
+  success: { background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: 4, padding: "10px 14px", marginBottom: 20, fontSize: "0.82rem", color: "#10b981", textAlign: "center" },
+};

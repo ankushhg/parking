@@ -38,7 +38,8 @@ export default function ProfilePage() {
       toast("Name updated!", "success");
       window.location.reload();
     } catch (err) {
-      setNameError(err.response?.data || "Failed to update name.");
+      const d = err.response?.data;
+      setNameError(typeof d === "string" ? d : d?.error || d?.message || "Failed to update name.");
     } finally {
       setNameLoading(false);
     }
@@ -58,7 +59,8 @@ export default function ProfilePage() {
       toast("Password changed successfully!", "success");
       setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
     } catch (err) {
-      setError(err.response?.data || "Failed to change password.");
+      const d = err.response?.data;
+      setError(typeof d === "string" ? d : d?.error || d?.message || "Failed to change password.");
     } finally {
       setLoading(false);
     }
@@ -71,23 +73,25 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6efe5] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col">
+    <div className="min-h-screen dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col" style={{ background: "#0d0500", fontFamily: "'Lato',sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');`}</style>
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg,#ff6b00,#c9a84c,#ff6b00)", zIndex: 100 }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/70 dark:bg-neutral-900/80 backdrop-blur-md border-b border-black/5 dark:border-white/5 w-full">
+      <header className="sticky z-50 w-full" style={{ top: 4, background: "rgba(13,5,0,0.92)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.2)" }}>
         <div className="flex items-center justify-between px-6 py-3 w-full">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neutral-950 text-white font-black text-sm">P</div>
-            <span className="font-bold text-base tracking-tight">ParkFlow</span>
+          <Link to="/dashboard" className="flex items-center gap-2" style={{ textDecoration: "none" }}>
+            <span style={{ fontSize: "1.3rem" }}>🕉</span>
+            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "1rem", color: "#c9a84c", fontWeight: 700 }}>ParkFlow</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/dashboard" className="rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-4 py-1.5 text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-700 transition">
+            <Link to="/dashboard" style={{ borderRadius: 20, border: "1px solid rgba(201,168,76,0.2)", background: "rgba(201,168,76,0.06)", padding: "6px 14px", fontSize: "0.78rem", fontWeight: 600, color: "rgba(240,208,128,0.8)", textDecoration: "none", fontFamily: "'Cinzel',serif", letterSpacing: 0.5, transition: "all 0.2s" }}>
               ← Dashboard
             </Link>
-            <button onClick={toggle} className="rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition">
+            <button onClick={toggle} style={{ borderRadius: 20, border: "1px solid rgba(201,168,76,0.2)", background: "rgba(255,255,255,0.04)", padding: "6px 12px", fontSize: "0.85rem", cursor: "pointer", color: "#fff" }}>
               {dark ? "☀️" : "🌙"}
             </button>
-            <button onClick={logout} className="rounded-full border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-4 py-1.5 text-sm font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 dark:hover:bg-red-950 dark:hover:text-red-400 transition">
+            <button onClick={logout} style={{ borderRadius: 20, border: "1px solid rgba(255,80,80,0.25)", background: "rgba(255,80,80,0.06)", padding: "6px 14px", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", color: "rgba(255,120,120,0.9)", fontFamily: "'Cinzel',serif", letterSpacing: 1, transition: "all 0.2s" }}>
               Log out
             </button>
           </div>
@@ -95,77 +99,68 @@ export default function ProfilePage() {
       </header>
 
       <main className="flex-1 max-w-2xl mx-auto w-full px-6 py-10 flex flex-col gap-6">
+        <style>{`
+          .t-input:focus { border-color: #c9a84c !important; box-shadow: 0 0 0 3px rgba(201,168,76,0.12) !important; }
+        `}</style>
 
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-neutral-950">My Profile</h1>
-          <p className="mt-1 text-sm text-neutral-500">View your account details and manage your password.</p>
+          <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: "1.4rem", color: "#c9a84c", marginBottom: 4 }}>My Profile</h1>
+          <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.4)", letterSpacing: 1 }}>View your account details and manage your password.</p>
         </div>
 
         {/* Account Info */}
-        <div className="rounded-2xl bg-white/80 dark:bg-neutral-900 border border-black/5 dark:border-white/5 p-6 shadow-sm flex items-center gap-5">
-          <div className="h-16 w-16 rounded-2xl bg-neutral-950 text-white text-2xl font-black flex items-center justify-center shrink-0">
-            {userName.charAt(0).toUpperCase()}
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-lg font-bold text-neutral-950 dark:text-white">{userName}</p>
-            <p className="text-sm text-neutral-500">{userEmail}</p>
-            <span className="mt-1 inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-              Active account
-            </span>
+        <div style={s.card}>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <div style={{ width: 60, height: 60, borderRadius: 12, background: "linear-gradient(135deg,#ff6b00,#c04500)", color: "#fff", fontSize: "1.6rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "'Cinzel',serif" }}>
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <p style={{ fontFamily: "'Cinzel',serif", fontSize: "1rem", color: "#f0d080", fontWeight: 600 }}>{userName}</p>
+              <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.45)" }}>{userEmail}</p>
+              <span style={{ display: "inline-flex", alignItems: "center", borderRadius: 20, background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", padding: "2px 10px", fontSize: "0.7rem", fontWeight: 600, color: "#10b981", letterSpacing: 1 }}>
+                Active account
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Update Name */}
-        <div className="rounded-2xl bg-white/80 dark:bg-neutral-900 border border-black/5 dark:border-white/5 p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-neutral-950 dark:text-white mb-5">Display Name</h2>
-          {nameError && <div className="mb-4 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">{nameError}</div>}
-          <div className="flex gap-3 max-w-sm">
+        <div style={s.card}>
+          <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: "0.95rem", color: "#f0d080", marginBottom: 16, letterSpacing: 1 }}>Display Name</h2>
+          {nameError && <div style={s.error}>{nameError}</div>}
+          <div style={{ display: "flex", gap: 10, maxWidth: 380 }}>
             <input type="text" value={nameInput} onChange={e => setNameInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleUpdateName()}
               placeholder="Your name"
-              className="flex-1 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
+              className="t-input"
+              style={s.input} />
             <button onClick={handleUpdateName} disabled={nameLoading || nameInput.trim() === userName}
-              className="rounded-full bg-neutral-950 dark:bg-white px-5 py-2.5 text-sm font-bold text-white! dark:text-neutral-950 hover:bg-neutral-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              style={{ ...s.btnPrimary, padding: "10px 20px", opacity: (nameLoading || nameInput.trim() === userName) ? 0.5 : 1, cursor: (nameLoading || nameInput.trim() === userName) ? "not-allowed" : "pointer", flexShrink: 0 }}>
               {nameLoading ? "Saving…" : "Save"}
             </button>
           </div>
         </div>
 
         {/* Change Password */}
-        <div className="rounded-2xl bg-white/80 dark:bg-neutral-900 border border-black/5 dark:border-white/5 p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-neutral-950 dark:text-white mb-5">Change Password</h2>
+        <div style={s.card}>
+          <h2 style={{ fontFamily: "'Cinzel',serif", fontSize: "0.95rem", color: "#f0d080", marginBottom: 16, letterSpacing: 1 }}>Change Password</h2>
 
-          {error && (
-            <div className="mb-4 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
+          {error && <div style={s.error}>{error}</div>}
 
-          <div className="flex flex-col gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Current password</label>
-              <input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-neutral-500 mb-1.5">New password</label>
-              <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Confirm new password</label>
-              <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                onKeyDown={e => e.key === "Enter" && handleChangePassword()}
-                className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-neutral-950/20 transition" />
-            </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {[["Current password", currentPassword, setCurrentPassword], ["New password", newPassword, setNewPassword], ["Confirm new password", confirmPassword, setConfirmPassword]].map(([label, val, set]) => (
+              <div key={label}>
+                <label style={s.label}>{label}</label>
+                <input type="password" value={val} onChange={e => set(e.target.value)}
+                  placeholder="••••••••" className="t-input" style={s.input}
+                  onKeyDown={label === "Confirm new password" ? e => e.key === "Enter" && handleChangePassword() : undefined} />
+              </div>
+            ))}
           </div>
 
           <button onClick={handleChangePassword} disabled={loading}
-            className="mt-5 rounded-full bg-neutral-950 px-6 py-2.5 text-sm font-bold text-white! shadow-md shadow-black/20 hover:bg-neutral-800 transition disabled:opacity-60 disabled:cursor-not-allowed">
-            {loading ? "Saving…" : "Update password"}
+            style={{ ...s.btnPrimary, marginTop: 20, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}>
+            {loading ? "Saving…" : "Update Password"}
           </button>
         </div>
 
@@ -173,3 +168,11 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+const s = {
+  card: { background: "linear-gradient(145deg,#1e0c02,#150800)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 10, padding: "28px 24px" },
+  label: { display: "block", fontSize: "0.72rem", letterSpacing: 2, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 7 },
+  input: { width: "100%", padding: "12px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: 5, color: "#fff", fontSize: "0.95rem", outline: "none", transition: "border-color 0.25s, box-shadow 0.25s", boxSizing: "border-box" },
+  btnPrimary: { padding: "12px 28px", background: "linear-gradient(135deg,#ff6b00,#c04500)", color: "#fff", border: "none", borderRadius: 5, fontFamily: "'Cinzel',serif", fontSize: "0.85rem", letterSpacing: 2, transition: "all 0.3s", boxShadow: "0 4px 20px rgba(255,107,0,0.35)", textTransform: "uppercase", display: "inline-block", cursor: "pointer" },
+  error: { background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)", borderRadius: 4, padding: "10px 14px", marginBottom: 16, fontSize: "0.82rem", color: "#ff7070" },
+};

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — Sringeri Temple Parking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --saffron: #ff6b00;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: #0d0500;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Background slideshow */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+    .bg-slide.active {
+      opacity: 1;
+      animation: zoomSlow 10s ease-in-out forwards;
+    }
+    @keyframes zoomSlow {
+      from { transform: scale(1.05); }
+      to   { transform: scale(1.0); }
+    }
+    .bg-slide:nth-child(1) { background-color: #1a0800; }
+    .bg-slide:nth-child(2) { background-color: #1a0800; }
+    .bg-slide:nth-child(3) { background-color: #1a0800; }
+
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10,4,0,0.82) 0%, rgba(26,10,0,0.75) 100%);
+    }
+
+    /* Top accent bar */
+    .accent-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--saffron), var(--gold), var(--saffron));
+      z-index: 10;
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(160deg, rgba(30,12,2,0.95), rgba(18,6,0,0.98));
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 10px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(201,168,76,0.06);
+    }
+
+    .card-header { text-align: center; margin-bottom: 32px; }
+
+    .om {
+      font-size: 2.8rem;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(201,168,76,0.8), 0 0 60px rgba(201,168,76,0.4);
+      animation: pulse 3.5s ease-in-out infinite;
+      display: block;
+      margin-bottom: 12px;
+    }
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 30px rgba(201,168,76,0.8), 0 0 60px rgba(201,168,76,0.4); }
+      50%       { text-shadow: 0 0 50px rgba(201,168,76,1),   0 0 90px rgba(201,168,76,0.7); }
+    }
+
+    .card-header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .card-header p {
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .divider-line { flex: 1; height: 1px; background: rgba(201,168,76,0.2); }
+    .divider-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .form-group input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--saffron), #c04500);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 2.5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 20px rgba(255,107,0,0.35);
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,107,0,0.55);
+    }
+    .btn-submit:active { transform: translateY(0); }
+
+    .error-msg {
+      color: #ff7070;
+      font-size: 0.82rem;
+      margin-top: 14px;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold-light); }
+    .back-link span { color: rgba(201,168,76,0.6); margin-right: 6px; }
+  </style>
+</head>
+<body>
+
+<div class="accent-bar"></div>
+
+<!-- Background slideshow -->
+<div class="bg">
+  <div class="bg-slide active"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-overlay"></div>
+</div>
+
+<!-- Admin login card -->
+<div class="card">
+  <div class="card-header">
+    <span class="om">🕉</span>
+    <h1>Admin Portal</h1>
+    <p>Sringeri Temple Parking</p>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Admin Email</label>
+    <input type="email" id="adminEmail" placeholder="admin@sringeri.temple" autocomplete="username"/>
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password"/>
+  </div>
+
+  <button class="btn-submit" onclick="doAdminLogin()">Enter Admin Panel</button>
+  <div class="error-msg" id="adminError"></div>
+
+  <a href="/" class="back-link"><span>←</span> Back to main page</a>
+</div>
+
+<script>
+  // Background slideshow — verified Unsplash URLs
+  const bgSlides = document.querySelectorAll('.bg-slide');
+  const bgImages = [
+    'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&q=85',
+    'https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85',
+    'https://images.unsplash.com/photo-1609920658906-8223bd289001?w=1920&q=85'
+  ];
+  bgImages.forEach((src, i) => { bgSlides[i].style.backgroundImage = `url('${src}')`; });
+
+  let bgCurrent = 0;
+  setInterval(() => {
+    bgSlides[bgCurrent].classList.remove('active');
+    bgCurrent = (bgCurrent + 1) % bgSlides.length;
+    bgSlides[bgCurrent].classList.add('active');
+  }, 6000);
+
+  async function doAdminLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    const errEl = document.getElementById('adminError');
+    errEl.textContent = '';
+
+    if (!email || !password) {
+      errEl.textContent = 'Please enter both email and password.';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!res.ok) {
+        errEl.textContent = 'Invalid credentials. Please try again.';
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.role !== 'ADMIN') {
+        errEl.textContent = 'Access denied. Admin credentials required.';
+        return;
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.role);
+      localStorage.setItem('name', data.name);
+      localStorage.setItem('userId', data.userId);
+      window.location.href = '/admin.html';
+    } catch {
+      errEl.textContent = 'Connection error. Is the server running?';
+    }
+  }
+
+  // Enter key support
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doAdminLogin();
+  });
+</script>
+</body>
+</html>

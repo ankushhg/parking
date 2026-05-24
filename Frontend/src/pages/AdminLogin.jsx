@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import API from "../services/api";
 import { Link } from "react-router-dom";
 
-const ADMIN_EMAIL = "admin@parking.com";
-const ADMIN_PASSWORD = "admin123";
+const BG_IMAGES = [
+  "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&q=85",
+  "https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85",
+  "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=1920&q=85",
+];
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -11,122 +14,163 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentBg, setCurrentBg] = useState(0);
 
-  useEffect(() => { document.title = "Admin Login — ParkFlow"; }, []);
+  useEffect(() => {
+    document.title = "Admin Portal — Sringeri Temple Parking";
+    BG_IMAGES.forEach((src) => { const img = new Image(); img.src = src; });
+    const timer = setInterval(() => setCurrentBg((p) => (p + 1) % BG_IMAGES.length), 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleLogin = async () => {
     setError("");
-    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
-      setError("Invalid admin credentials.");
-      return;
-    }
+    if (!email || !password) { setError("Please enter both email and password."); return; }
     setLoading(true);
     try {
       const res = await API.post("/auth/login", { email, password });
+      if (res.data.role !== "ADMIN") { setError("Access denied. Admin credentials required."); setLoading(false); return; }
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
+      localStorage.setItem("name", res.data.name);
       window.location.href = "/admin";
     } catch (err) {
-      setError(err.response?.data || "Login failed. Please try again.");
+      setError(err.response?.data || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleLogin();
-  };
-
   return (
-    <div className="min-h-screen bg-[#f6efe5] flex flex-col">
+    <div style={{ fontFamily: "'Lato',sans-serif", minHeight: "100vh", background: "#0d0500", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;600&display=swap');
+        @keyframes zoomSlow { from { transform: scale(1.06); } to { transform: scale(1.0); } }
+        @keyframes pulse {
+          0%,100% { text-shadow: 0 0 30px rgba(201,168,76,0.8), 0 0 60px rgba(201,168,76,0.4); }
+          50%      { text-shadow: 0 0 50px rgba(201,168,76,1), 0 0 90px rgba(201,168,76,0.7); }
+        }
+        .admin-input:focus { border-color: #c9a84c !important; box-shadow: 0 0 0 3px rgba(201,168,76,0.12) !important; }
+        .admin-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255,107,0,0.55) !important; }
+        .admin-submit:active { transform: translateY(0); }
+        .back-link:hover { color: #f0d080 !important; }
+      `}</style>
 
-      {/* Header */}
-      <header className="w-full px-6 py-4">
-        <Link to="/" className="flex items-center gap-2 w-fit">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-950 text-white font-black">
-            P
-          </div>
-          <span className="font-semibold text-lg tracking-tight text-neutral-900">ParkFlow</span>
-        </Link>
-      </header>
+      {/* Top accent bar */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg,#ff6b00,#c9a84c,#ff6b00)", zIndex: 100 }} />
 
-      {/* Main */}
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
+      {/* Background slides */}
+      {BG_IMAGES.map((src, idx) => (
+        <div key={idx} style={{
+          position: "fixed", inset: 0,
+          backgroundImage: `url('${src}')`,
+          backgroundSize: "cover", backgroundPosition: "center",
+          opacity: currentBg === idx ? 1 : 0,
+          transition: "opacity 1.5s ease-in-out",
+          animation: currentBg === idx ? "zoomSlow 10s ease-in-out forwards" : "none",
+          zIndex: 0,
+        }} />
+      ))}
+      {/* Overlay */}
+      <div style={{ position: "fixed", inset: 0, background: "linear-gradient(135deg,rgba(10,4,0,0.85) 0%,rgba(26,10,0,0.78) 100%)", zIndex: 1 }} />
 
-          {/* Card */}
-          <div className="rounded-3xl bg-white/80 border border-black/5 shadow-xl shadow-black/5 p-8 sm:p-10">
+      {/* Card */}
+      <div style={{
+        position: "relative", zIndex: 2,
+        background: "linear-gradient(160deg,rgba(30,12,2,0.97),rgba(18,6,0,0.99))",
+        border: "1px solid rgba(201,168,76,0.35)",
+        borderRadius: 10,
+        padding: "48px 44px",
+        width: "100%", maxWidth: 420,
+        boxShadow: "0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(201,168,76,0.06)",
+        margin: "0 16px",
+      }}>
 
-            {/* Title */}
-            <div className="mb-8 text-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-700 mb-4">
-                Admin Access
-              </span>
-              <h1 className="text-2xl font-bold tracking-tight text-neutral-950">Admin Sign in</h1>
-              <p className="mt-1.5 text-sm text-neutral-500">Sign in with your admin credentials</p>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="mb-5 rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
-                {error}
-              </div>
-            )}
-
-            {/* Fields */}
-            <div className="flex flex-col gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Email</label>
-                <input
-                  type="email"
-                  placeholder="admin@parking.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-neutral-900 outline-none focus:ring-2 focus:ring-neutral-950/20 transition placeholder:text-neutral-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-neutral-500 mb-1.5">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 pr-11 text-sm text-neutral-900 outline-none focus:ring-2 focus:ring-neutral-950/20 transition placeholder:text-neutral-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((p) => !p)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 transition text-xs font-semibold"
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              onClick={handleLogin}
-              disabled={loading}
-              className="mt-6 w-full rounded-full bg-neutral-950 px-6 py-3 text-sm font-bold text-white! shadow-md shadow-black/20 hover:bg-neutral-800 transition disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? "Signing in…" : "Sign in"}
-            </button>
-
-          </div>
-
-          {/* Back link */}
-          <p className="mt-6 text-center text-sm text-neutral-400">
-            <Link to="/" className="hover:text-neutral-600 transition">← Back to home</Link>
-          </p>
-
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <span style={{ fontSize: "2.8rem", display: "block", marginBottom: 12, animation: "pulse 3.5s ease-in-out infinite" }}>🕉</span>
+          <h1 style={{ fontFamily: "'Cinzel',serif", fontSize: "1.4rem", color: "#c9a84c", marginBottom: 4 }}>Admin Portal</h1>
+          <p style={{ fontSize: "0.78rem", letterSpacing: 3, color: "rgba(255,255,255,0.35)", textTransform: "uppercase" }}>Sringeri Temple Parking</p>
         </div>
+
+        {/* Divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 28 }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(201,168,76,0.2)" }} />
+          <div style={{ width: 6, height: 6, background: "#c9a84c", transform: "rotate(45deg)", flexShrink: 0 }} />
+          <div style={{ flex: 1, height: 1, background: "rgba(201,168,76,0.2)" }} />
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div style={{ background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)", borderRadius: 4, padding: "10px 14px", marginBottom: 20, fontSize: "0.82rem", color: "#ff7070", textAlign: "center" }}>
+            {error}
+          </div>
+        )}
+
+        {/* Fields */}
+        <div style={{ marginBottom: 20 }}>
+          <label style={s.label}>Admin Email</label>
+          <input
+            type="email"
+            placeholder="admin@sringeri.temple"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            className="admin-input"
+            style={s.input}
+          />
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <label style={s.label}>Password</label>
+          <div style={{ position: "relative" }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              className="admin-input"
+              style={{ ...s.input, paddingRight: 56 }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((p) => !p)}
+              style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: "rgba(255,255,255,0.4)", fontSize: "0.75rem", cursor: "pointer", fontFamily: "'Cinzel',serif", letterSpacing: 1 }}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
+
+        {/* Submit */}
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="admin-submit"
+          style={{
+            width: "100%", padding: "14px", marginTop: 20,
+            background: loading ? "rgba(255,107,0,0.5)" : "linear-gradient(135deg,#ff6b00,#c04500)",
+            color: "#fff", border: "none", borderRadius: 5,
+            fontFamily: "'Cinzel',serif", fontSize: "0.9rem", letterSpacing: 2.5,
+            cursor: loading ? "not-allowed" : "pointer",
+            transition: "all 0.3s",
+            boxShadow: "0 4px 20px rgba(255,107,0,0.35)",
+            textTransform: "uppercase",
+          }}
+        >
+          {loading ? "Signing in…" : "Enter Admin Panel"}
+        </button>
+
+        {/* Back link */}
+        <Link to="/" className="back-link" style={{ display: "block", textAlign: "center", marginTop: 22, fontSize: "0.8rem", color: "rgba(255,255,255,0.3)", textDecoration: "none", letterSpacing: 1, transition: "color 0.2s" }}>
+          ← Back to main page
+        </Link>
       </div>
     </div>
   );
 }
+
+const s = {
+  label: { display: "block", fontSize: "0.72rem", letterSpacing: 2, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", marginBottom: 8, fontFamily: "'Lato',sans-serif" },
+  input: { width: "100%", padding: "12px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(201,168,76,0.25)", borderRadius: 5, color: "#fff", fontSize: "0.95rem", outline: "none", transition: "border-color 0.25s, box-shadow 0.25s", boxSizing: "border-box" },
+};
